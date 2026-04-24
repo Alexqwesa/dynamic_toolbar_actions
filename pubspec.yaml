@@ -1,7 +1,7 @@
 name: dynamic_toolbar_actions
 description: "Adaptive toolbar actions with grouped overflow menus."
 version: 0.0.1
-homepage:
+homepage: https://github.com/Alexqwesa/dynamic_toolbar_actions
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
