@@ -1,5 +1,9 @@
 # dynamic_toolbar_actions
 
+⚠️ Early Development: This project is still in its early stages and is primarily used internally. 
+Although it has remained largely unchanged for the past six months, 
+I'm still uncertain about the final shape of its API and the value it should provide compared to existing solutions. (todo this)
+
 Adaptive toolbar actions for Flutter `AppBar` that:
 
 - keep important actions visible first,
