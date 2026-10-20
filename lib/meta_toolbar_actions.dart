@@ -55,6 +55,7 @@ class MetaActionItem {
     this.tooltip,
     this.label,
     this.icon,
+    this.color,
     this.menuIcon,
     this.onTap,
     this.onLongPress,
@@ -74,6 +75,7 @@ class MetaActionItem {
   final String? tooltip;
   final String? label;
   final IconData? icon;
+  final Color? color;
   final IconData? menuIcon;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -89,6 +91,7 @@ class MetaActionItem {
     VoidCallback? onLongPress,
     String? tooltip,
     String? label,
+    Color? color,
     bool enabled = true,
     int hidePriority = 100,
     double toolbarWidth = 48,
@@ -98,6 +101,7 @@ class MetaActionItem {
     return MetaActionItem._(
       kind: MetaActionKind.icon,
       icon: icon,
+      color: color,
       menuIcon: menuIcon,
       onTap: onTap,
       onLongPress: onLongPress,
@@ -200,6 +204,7 @@ DynamicActionItem _toDynamicActionItem(MetaActionItem item) {
         onLongPress: item.onLongPress,
         tooltip: item.tooltip,
         label: item.label,
+        color: item.color,
         enabled: item.enabled,
         hidePriority: item.hidePriority,
         toolbarWidth: item.toolbarWidth,

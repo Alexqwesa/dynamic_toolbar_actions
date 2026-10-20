@@ -49,13 +49,18 @@ class DynamicToolbarActions extends StatelessWidget {
             if (layout.overflowGroupsWithItems.isNotEmpty &&
                 layout.visibleItems.isNotEmpty)
               SizedBox(width: gap),
-            for (var index = 0; index < layout.overflowGroupsWithItems.length; index++) ...[
+            for (
+              var index = 0;
+              index < layout.overflowGroupsWithItems.length;
+              index++
+            ) ...[
               _DynamicOverflowGroupButton(
                 iconSize: iconSize,
                 group: layout.overflowGroupsWithItems[index].group,
                 overflowItems: layout.overflowGroupsWithItems[index].items,
               ),
-              if (index < layout.overflowGroupsWithItems.length - 1) SizedBox(width: gap),
+              if (index < layout.overflowGroupsWithItems.length - 1)
+                SizedBox(width: gap),
             ],
           ],
         );
@@ -73,26 +78,31 @@ class DynamicToolbarActions extends StatelessWidget {
       items.where((item) => item.showInToolbar).toList(),
     );
     var visible = toolbarItems.toList();
-    final hidden = <DynamicActionItem>[
-      ...items.where((item) => item.menuOnly),
-    ];
+    final hidden = <DynamicActionItem>[...items.where((item) => item.menuOnly)];
 
     final groupById = <String, DynamicOverflowGroup>{
       for (final group in overflowGroups) group.id: group,
-      DynamicOverflowGroup.defaultGroup().id: DynamicOverflowGroup.defaultGroup(),
+      DynamicOverflowGroup.defaultGroup().id:
+          DynamicOverflowGroup.defaultGroup(),
     };
 
-    List<_OverflowGroupItems> resolveOverflowGroups(List<DynamicActionItem> hiddenItems) {
+    List<_OverflowGroupItems> resolveOverflowGroups(
+      List<DynamicActionItem> hiddenItems,
+    ) {
       final byGroup = <String, List<DynamicActionItem>>{};
       for (final item in hiddenItems) {
         if (!item.showInMenu) continue;
-        byGroup.putIfAbsent(item.overflowGroupId, () => <DynamicActionItem>[]).add(item);
+        byGroup
+            .putIfAbsent(item.overflowGroupId, () => <DynamicActionItem>[])
+            .add(item);
       }
 
       final resolved = <_OverflowGroupItems>[];
       final orderedGroupIds = <String>[
         ...overflowGroups.map((group) => group.id),
-        ...byGroup.keys.where((groupId) => !overflowGroups.any((group) => group.id == groupId)),
+        ...byGroup.keys.where(
+          (groupId) => !overflowGroups.any((group) => group.id == groupId),
+        ),
       ];
 
       for (final groupId in orderedGroupIds) {
@@ -114,13 +124,17 @@ class DynamicToolbarActions extends StatelessWidget {
     }) {
       final pieces = <double>[];
       if (entries.isNotEmpty) {
-        final contentWidth = entries.fold<double>(0, (sum, item) => sum + item.toolbarWidth);
+        final contentWidth = entries.fold<double>(
+          0,
+          (sum, item) => sum + item.toolbarWidth,
+        );
         final gapsWidth = gap * math.max(0, entries.length - 1);
         pieces.add(contentWidth + gapsWidth);
       }
       if (overflowButtonsCount > 0) {
         final buttonWidths =
-            overflowButtonsCount * overflowButtonWidth + gap * math.max(0, overflowButtonsCount - 1);
+            overflowButtonsCount * overflowButtonWidth +
+            gap * math.max(0, overflowButtonsCount - 1);
         pieces.add(buttonWidths);
       }
       if (pieces.length == 2) {
@@ -131,12 +145,15 @@ class DynamicToolbarActions extends StatelessWidget {
 
     final hideCandidatesByPriority = <int, List<DynamicActionItem>>{};
     for (final item in toolbarItems.where((item) => item.showInMenu)) {
-      hideCandidatesByPriority.putIfAbsent(item.hidePriority, () => <DynamicActionItem>[]).add(item);
+      hideCandidatesByPriority
+          .putIfAbsent(item.hidePriority, () => <DynamicActionItem>[])
+          .add(item);
     }
     final orderedPriorities = hideCandidatesByPriority.keys.toList()..sort();
     for (final priority in orderedPriorities) {
       final overflowButtonsCount = resolveOverflowGroups(hidden).length;
-      if (totalWidth(visible, overflowButtonsCount: overflowButtonsCount) <= availableWidth) {
+      if (totalWidth(visible, overflowButtonsCount: overflowButtonsCount) <=
+          availableWidth) {
         break;
       }
 
@@ -170,7 +187,8 @@ class DynamicToolbarActions extends StatelessWidget {
       }
       filtered.add(item);
     }
-    while (filtered.isNotEmpty && filtered.last.kind == DynamicActionKind.divider) {
+    while (filtered.isNotEmpty &&
+        filtered.last.kind == DynamicActionKind.divider) {
       filtered.removeLast();
     }
     return filtered;
@@ -186,7 +204,8 @@ class DynamicToolbarActions extends StatelessWidget {
       }
       filtered.add(item);
     }
-    while (filtered.isNotEmpty && filtered.last.kind == DynamicActionKind.divider) {
+    while (filtered.isNotEmpty &&
+        filtered.last.kind == DynamicActionKind.divider) {
       filtered.removeLast();
     }
     return filtered;
@@ -222,10 +241,7 @@ class _ToolbarActionStrip extends StatelessWidget {
 }
 
 class _ToolbarActionItemWidget extends StatelessWidget {
-  const _ToolbarActionItemWidget({
-    required this.item,
-    required this.iconSize,
-  });
+  const _ToolbarActionItemWidget({required this.item, required this.iconSize});
 
   final DynamicActionItem item;
   final double? iconSize;
@@ -240,6 +256,7 @@ class _ToolbarActionItemWidget extends StatelessWidget {
       case DynamicActionKind.icon:
         return IconButton(
           tooltip: item.tooltip,
+          color: item.color,
           iconSize: iconSize ?? 24,
           onPressed: item.enabled ? item.onTap : null,
           onLongPress: item.enabled ? item.onLongPress : null,
@@ -283,7 +300,7 @@ class _DynamicOverflowGroupButton extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(item.menuIcon ?? item.icon),
+                      Icon(item.menuIcon ?? item.icon, color: item.color),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
@@ -298,27 +315,45 @@ class _DynamicOverflowGroupButton extends StatelessWidget {
               break;
             case DynamicActionKind.widget:
               final hasInlineMenuWidget =
-                  item.onTap == null && (item.menuWidget != null || item.widget != null);
+                  item.onTap == null &&
+                  (item.menuWidget != null || item.widget != null);
+              final label = item.label ?? item.tooltip ?? '';
               final child =
                   item.menuWidget ??
                   (hasInlineMenuWidget
-                      ? item.widget ?? const SizedBox.shrink()
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            item.widget ?? const SizedBox.shrink(),
+                            if (label.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  label,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ],
+                        )
                       : Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (item.menuIcon != null) ...[
-                              Icon(item.menuIcon),
+                              Icon(item.menuIcon, color: item.color),
                               const SizedBox(width: 8),
                             ],
-                            if ((item.label ?? item.tooltip ?? '').isNotEmpty)
+                            if (label.isNotEmpty)
                               Flexible(
                                 child: Text(
-                                  item.label ?? item.tooltip ?? '',
+                                  label,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               )
                             else
-                              Flexible(child: item.widget ?? const SizedBox.shrink()),
+                              Flexible(
+                                child: item.widget ?? const SizedBox.shrink(),
+                              ),
                           ],
                         ));
               if (hasInlineMenuWidget) {
@@ -328,7 +363,10 @@ class _DynamicOverflowGroupButton extends StatelessWidget {
                   PopupMenuItem<int>(
                     value: index,
                     enabled: item.enabled && item.onTap != null,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     child: child,
                   ),
                 );
@@ -351,10 +389,10 @@ class DynamicOverflowGroup {
   });
 
   const DynamicOverflowGroup.defaultGroup()
-      : id = 'default',
-        icon = Icons.more_vert,
-        tooltip = null,
-        buttonKey = null;
+    : id = 'default',
+      icon = Icons.more_vert,
+      tooltip = null,
+      buttonKey = null;
 
   final String id;
   final IconData icon;
@@ -377,6 +415,7 @@ class DynamicActionItem {
     this.tooltip,
     this.label,
     this.icon,
+    this.color,
     this.menuIcon,
     this.onTap,
     this.onLongPress,
@@ -397,6 +436,7 @@ class DynamicActionItem {
   final String? tooltip;
   final String? label;
   final IconData? icon;
+  final Color? color;
   final IconData? menuIcon;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -412,6 +452,7 @@ class DynamicActionItem {
     VoidCallback? onLongPress,
     String? tooltip,
     String? label,
+    Color? color,
     bool enabled = true,
     int hidePriority = 100,
     double toolbarWidth = 48,
@@ -422,6 +463,7 @@ class DynamicActionItem {
     return DynamicActionItem._(
       kind: DynamicActionKind.icon,
       icon: icon,
+      color: color,
       menuIcon: menuIcon,
       onTap: onTap,
       onLongPress: onLongPress,
@@ -533,10 +575,7 @@ class _ResolvedLayout {
 }
 
 class _OverflowGroupItems {
-  const _OverflowGroupItems({
-    required this.group,
-    required this.items,
-  });
+  const _OverflowGroupItems({required this.group, required this.items});
 
   final DynamicOverflowGroup group;
   final List<DynamicActionItem> items;
@@ -558,10 +597,12 @@ class _InlineWidgetPopupMenuEntry<T> extends PopupMenuEntry<T> {
   bool represents(T? value) => false;
 
   @override
-  State<_InlineWidgetPopupMenuEntry<T>> createState() => _InlineWidgetPopupMenuEntryState<T>();
+  State<_InlineWidgetPopupMenuEntry<T>> createState() =>
+      _InlineWidgetPopupMenuEntryState<T>();
 }
 
-class _InlineWidgetPopupMenuEntryState<T> extends State<_InlineWidgetPopupMenuEntry<T>> {
+class _InlineWidgetPopupMenuEntryState<T>
+    extends State<_InlineWidgetPopupMenuEntry<T>> {
   @override
   Widget build(BuildContext context) {
     return Padding(
