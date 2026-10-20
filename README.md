@@ -1,7 +1,8 @@
 # dynamic_toolbar_actions
 
 ⚠️ Early Development: This project is still in its early stages and is primarily used internally. 
-It almost din't change in the last half year but i still not sure about final shape of it's api and that it should bring. 
+Although it has remained largely unchanged for the past six months, 
+I'm still uncertain about the final shape of its API and the value it should provide compared to existing solutions. (todo this)
 
 Adaptive toolbar actions for Flutter `AppBar` that:
 
